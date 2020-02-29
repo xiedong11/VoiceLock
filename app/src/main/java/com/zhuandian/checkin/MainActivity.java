@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
     // 引擎类型
     private String mEngineType = SpeechConstant.TYPE_CLOUD;
 
-    private String language="zh_cn";
-    private int selectedNum=0;
+    private String language = "zh_cn";
+    private int selectedNum = 0;
 
     private String resultType = "json";
 
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     int ret = 0; // 函数调用返回值
     private StringBuffer buffer = new StringBuffer();
 
-    Handler han = new Handler(){
+    Handler han = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
@@ -69,45 +69,49 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private static int flg=0;
+    private static int flg = 0;
     private ImageView ivLockState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ScreenBroadcastReceiver mScreenReceiver = new ScreenBroadcastReceiver();
+        mScreenReceiver.registerScreenBroadcastReceiver(this);
+
+
         // 初始化识别无UI识别对象
         // 使用SpeechRecognizer对象，可根据回调消息自定义界面；
         mIat = SpeechRecognizer.createRecognizer(MainActivity.this, mInitListener);
-         findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 startActivity(new Intent(MainActivity.this,IatActivity.class));
-             }
-         });
+        findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, IatActivity.class));
+            }
+        });
 
         ivLockState = (ImageView) findViewById(R.id.iv_lock_state);
         findViewById(R.id.iv_voice).setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 // 移动数据分析，收集开始听写事件
-                 //	FlowerCollector.onEvent(IatActivity.this, "iat_recognize");
+            @Override
+            public void onClick(View v) {
+                // 移动数据分析，收集开始听写事件
+                //	FlowerCollector.onEvent(IatActivity.this, "iat_recognize");
 
-                 buffer.setLength(0);
-                 mIatResults.clear();
-                 // 设置参数
-                 setParam();
-                 boolean isShowDialog = false;
+                buffer.setLength(0);
+                mIatResults.clear();
+                // 设置参数
+                setParam();
+                boolean isShowDialog = false;
 
-                     // 不显示听写对话框
-                     ret = mIat.startListening(mRecognizerListener);
-                     if (ret != ErrorCode.SUCCESS) {
+                // 不显示听写对话框
+                ret = mIat.startListening(mRecognizerListener);
+                if (ret != ErrorCode.SUCCESS) {
 //                         showTip("听写失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
-                     } else {
-                         Toast.makeText(MainActivity.this, getString(R.string.text_begin), Toast.LENGTH_SHORT).show();
-                 }
-             }
-         });
+                } else {
+                    Toast.makeText(MainActivity.this, getString(R.string.text_begin), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 
@@ -120,12 +124,10 @@ public class MainActivity extends AppCompatActivity {
         public void onInit(int code) {
             Log.d(TAG, "SpeechRecognizer init() code = " + code);
             if (code != ErrorCode.SUCCESS) {
-                showTip("初始化失败，错误码：" + code+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
+                showTip("初始化失败，错误码：" + code + ",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
             }
         }
     };
-
-
 
 
     /**
@@ -162,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
                 printResult(results);
 
-            }else if(resultType.equals("plain")) {
+            } else if (resultType.equals("plain")) {
                 buffer.append(results.getResultString());
             }
 
@@ -170,14 +172,14 @@ public class MainActivity extends AppCompatActivity {
                 // TODO 最后的结果
                 Message message = Message.obtain();
                 message.what = 0x001;
-                han.sendMessageDelayed(message,100);
+                han.sendMessageDelayed(message, 100);
             }
         }
 
         @Override
         public void onVolumeChanged(int volume, byte[] data) {
             showTip("当前正在说话，音量大小：" + volume);
-            Log.d(TAG, "返回音频数据："+data.length);
+            Log.d(TAG, "返回音频数据：" + data.length);
         }
 
         @Override
@@ -211,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("config", Context.MODE_PRIVATE);
         String password = sharedPreferences.getString("password", "");
-        if (password.equals(resultBuffer.toString())){
+        if (password.equals(resultBuffer.toString())) {
             ivLockState.setBackgroundResource(R.drawable.unlock);
             new AlertDialog.Builder(this)
                     .setTitle("解锁成功")
@@ -221,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                             dialog.cancel();
                         }
                     }).create().show();
-        }else {
+        } else {
             ivLockState.setBackgroundResource(R.drawable.lock2);
         }
     }
@@ -243,7 +245,6 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-
     private void showTip(final String str) {
 //        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
@@ -260,16 +261,16 @@ public class MainActivity extends AppCompatActivity {
         mIat.setParameter(SpeechConstant.ENGINE_TYPE, mEngineType);
         // 设置返回结果格式
         mIat.setParameter(SpeechConstant.RESULT_TYPE, resultType);
-        if(language.equals("zh_cn")) {
-            Log.e(TAG,"language:"+language);// 设置语言
+        if (language.equals("zh_cn")) {
+            Log.e(TAG, "language:" + language);// 设置语言
             mIat.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
             // 设置语言区域
             mIat.setParameter(SpeechConstant.ACCENT, "mandarin");
-        }else {
+        } else {
 
             mIat.setParameter(SpeechConstant.LANGUAGE, language);
         }
-        Log.e(TAG,"last language:"+mIat.getParameter(SpeechConstant.LANGUAGE));
+        Log.e(TAG, "last language:" + mIat.getParameter(SpeechConstant.LANGUAGE));
 
         //此处用于设置dialog中不显示错误码信息
         //mIat.setParameter("view_tips_plain","false");
@@ -280,15 +281,15 @@ public class MainActivity extends AppCompatActivity {
         // 设置标点符号,设置为"0"返回结果无标点,设置为"1"返回结果有标点
         mIat.setParameter(SpeechConstant.ASR_PTT, "1");
         // 设置音频保存路径，保存音频格式支持pcm、wav，设置路径为sd卡请注意WRITE_EXTERNAL_STORAGE权限
-        mIat.setParameter(SpeechConstant.AUDIO_FORMAT,"wav");
-        mIat.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory()+"/msc/iat.wav");
+        mIat.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
+        mIat.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory() + "/msc/iat.wav");
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if( null != mIat ){
+        if (null != mIat) {
             // 退出时释放连接
             mIat.cancel();
             mIat.destroy();
@@ -323,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
         //mIat.setParameter(SpeechConstant.ASR_SOURCE_PATH, "sdcard/XXX/XXX.pcm");
         ret = mIat.startListening(mRecognizerListener);
         if (ret != ErrorCode.SUCCESS) {
-            showTip("识别失败,错误码：" + ret+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
+            showTip("识别失败,错误码：" + ret + ",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
         } else {
             byte[] audioData = FucUtil.readAudioFile(MainActivity.this, "iattest.wav");
 
@@ -333,13 +334,13 @@ public class MainActivity extends AppCompatActivity {
                 // 位长16bit，单声道的wav或者pcm
                 // 写入8KHz采样的音频时，必须先调用setParameter(SpeechConstant.SAMPLE_RATE, "8000")设置正确的采样率
                 // 注：当音频过长，静音部分时长超过VAD_EOS将导致静音后面部分不能识别。
-                ArrayList<byte[]> bytes = FucUtil.splitBuffer(audioData,audioData.length,audioData.length/3);
-                for(int i=0;i<bytes.size();i++) {
-                    mIat.writeAudio(bytes.get(i), 0, bytes.get(i).length );
+                ArrayList<byte[]> bytes = FucUtil.splitBuffer(audioData, audioData.length, audioData.length / 3);
+                for (int i = 0; i < bytes.size(); i++) {
+                    mIat.writeAudio(bytes.get(i), 0, bytes.get(i).length);
 
                     try {
                         Thread.sleep(1000);
-                    }catch(Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
