@@ -213,18 +213,23 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("config", Context.MODE_PRIVATE);
         String password = sharedPreferences.getString("password", "");
-        if (password.equals(resultBuffer.toString())) {
+        if (resultBuffer.toString().contains(password)) {
             ivLockState.setBackgroundResource(R.drawable.unlock);
-            new AlertDialog.Builder(this)
-                    .setTitle("解锁成功")
-                    .setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    }).create().show();
+//            new AlertDialog.Builder(this)
+//                    .setTitle("解锁成功")
+//                    .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.cancel();
+//                            isLocked = false;
+//                            finish();
+//                        }
+//                    }).create().show();
+            startActivity(new Intent(this,HomeActivity.class));
+            finish();
         } else {
             ivLockState.setBackgroundResource(R.drawable.lock2);
+            Toast.makeText(this, "密码输入错误...", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -352,5 +357,13 @@ public class MainActivity extends AppCompatActivity {
                 showTip("读取音频流失败");
             }
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        Toast.makeText(this, "请先解锁...", Toast.LENGTH_SHORT).show();
+
     }
 }

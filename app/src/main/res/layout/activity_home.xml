@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".HomeActivity">
+
+    <TextView
+        android:id="@+id/tv_voice"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#00B0FF"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:text="语音密码"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_number"
+        android:layout_marginTop="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#00B0FF"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:text="数字密码"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/tv_map"
+        android:layout_marginTop="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#00B0FF"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:text="图案密码"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/tv_figurer"
+        android:layout_marginTop="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#00B0FF"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:text="指纹密码"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+</LinearLayout>
