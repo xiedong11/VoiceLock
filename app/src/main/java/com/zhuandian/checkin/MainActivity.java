@@ -71,11 +71,17 @@ public class MainActivity extends AppCompatActivity {
 
     private static int flg = 0;
     private ImageView ivLockState;
+    boolean isLocked = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
         ScreenBroadcastReceiver mScreenReceiver = new ScreenBroadcastReceiver();
         mScreenReceiver.registerScreenBroadcastReceiver(this);
 
@@ -225,8 +231,10 @@ public class MainActivity extends AppCompatActivity {
 //                            finish();
 //                        }
 //                    }).create().show();
-            startActivity(new Intent(this,HomeActivity.class));
-            finish();
+//            startActivity(new Intent(this,HomeActivity.class));
+            isLocked = true;
+            moveTaskToBack(true);
+
         } else {
             ivLockState.setBackgroundResource(R.drawable.lock2);
             Toast.makeText(this, "密码输入错误...", Toast.LENGTH_SHORT).show();
@@ -307,6 +315,10 @@ public class MainActivity extends AppCompatActivity {
 		/*FlowerCollector.onResume(IatActivity.this);
 		FlowerCollector.onPageStart(TAG);*/
         super.onResume();
+        if (isLocked) {
+            startActivity(new Intent(this, HomeActivity.class));
+            moveTaskToBack(true);
+        }
     }
 
     @Override

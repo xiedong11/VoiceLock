@@ -19,6 +19,9 @@ public class ScreenBroadcastReceiver extends BroadcastReceiver {
         if (Intent.ACTION_SCREEN_ON.equals(action)) {
             // 开屏
             Log.i(TAG, "onReceive: 1");
+            context.startActivity(new Intent(context,MainActivity.class));
+            startLocalApp("com.zhuandian.checkin");
+            SystemHelper.setTopApp(context);
 
         } else if (Intent.ACTION_SCREEN_OFF.equals(action)) {
             // 锁屏
